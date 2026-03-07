@@ -4,6 +4,7 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -19,6 +20,10 @@ func New(dsn string) (*DB, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not open database connection: %w", err)
 	}
+
+	// Set pool connections and life time
+	sqlDB.SetMaxOpenConns(5)
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
 
 	// Ping actually tries to connect
 	if err := sqlDB.Ping(); err != nil {
