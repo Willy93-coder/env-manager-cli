@@ -5,6 +5,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
@@ -63,7 +64,7 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("could not find home directory: %w", err)
 	}
 
-	path := fmt.Sprintf("%s/.env-manager/config.yaml", home)
+	path := filepath.Join(home, ".env-manager", "config.yaml")
 
 	data, err := os.ReadFile(path)
 	if err != nil {
