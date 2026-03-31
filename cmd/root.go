@@ -1,30 +1,55 @@
-/*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
-*/
+// Copyright © 2026 willy93-coder
 package cmd
 
 import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/willy93-coder/env-manager-cli/internal/config"
+	"github.com/willy93-coder/env-manager-cli/internal/db"
 )
 
-
+// Package-level variables
+var (
+	cfg      *config.Config
+	database *db.DB
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "env-manager-cli",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Use:   "env-manager",
+	Short: "Manage .env files with PostgreSQL backend",
+	Long: `env-manager is a CLI tool to manage environment variables
+	accross multiple projects, stored securely in PostgreSQL.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	// Uncomment the following line if your bare application
-	// has an action associated with it:
-	// Run: func(cmd *cobra.Command, args []string) { },
+	Example:
+		env-manager init my-project
+		env-manager set my-project DB_HOST localhost
+		env-manager get my-project DB_HOST`,
+	// PersistentPreRunE runs before ANY subcommand
+	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+		// 'setup' is the only command that does not need a DB connection
+		// It creates the config file, so it cannot depend on it existing.
+		if cmd.Name() == "setup" {
+			return nil
+		}
+
+		// Load config from ~/.env-manager/config.yaml
+		loadedCfg, err := config.Load()
+		if err != nil {
+			return err
+		}
+		cfg = loadedCfg
+
+		// Connect to PostgreSQL using loaded config
+		connectedDB, err := db.New(cfg.DSN())
+		if err != nil {
+			return err
+		}
+		database = connectedDB
+
+		return nil
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -37,15 +62,5 @@ func Execute() {
 }
 
 func init() {
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.env-manager-cli.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// Subcommands will be registered here as we build them
 }
-
-
