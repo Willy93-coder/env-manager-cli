@@ -58,14 +58,7 @@ func (c *Config) Validate() error {
 }
 
 // Load reads the config file from the default location
-func Load() (*Config, error) {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return nil, fmt.Errorf("could not find home directory: %w", err)
-	}
-
-	path := filepath.Join(home, ".env-manager", "config.yaml")
-
+func Load(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("could not read config file at %s: %w", path, err)
@@ -81,4 +74,42 @@ func Load() (*Config, error) {
 	}
 
 	return &cfg, nil
+}
+
+func LoadDefault() (*Config, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("could not find home directory: %w", err)
+	}
+
+	path := filepath.Join(home, ".env-manager", "config.yaml")
+	return Load(path)
+}
+
+func Save(cfg *Config, path string) error {
+	err := os.MkdirAll(filepath.Dir(path), 0755)
+	if err != nil {
+		return fmt.Errorf("could not create config directory: %w", err)
+	}
+
+	data, err := yaml.Marshal(cfg)
+	if err != nil {
+		return fmt.Errorf("could not serialize config to YAML: %w", err)
+	}
+
+	err = os.WriteFile(path, data, 0600)
+	if err != nil {
+		return fmt.Errorf("could not write config file: %w", err)
+	}
+
+	return nil
+}
+
+func SaveDefault(cfg *Config) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("could not find home directory: %w", err)
+	}
+	path := filepath.Join(home, ".env-manager", "config.yaml")
+	return Save(cfg, path)
 }
