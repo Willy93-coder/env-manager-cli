@@ -35,7 +35,7 @@ var rootCmd = &cobra.Command{
 		}
 
 		// Load config from ~/.env-manager/config.yaml
-		loadedCfg, err := config.Load()
+		loadedCfg, err := config.LoadDefault()
 		if err != nil {
 			return err
 		}
