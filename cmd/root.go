@@ -1,4 +1,6 @@
 // Copyright © 2026 willy93-coder
+
+// Package cmd contains all CLI commands for the env-manager application
 package cmd
 
 import (
@@ -20,7 +22,7 @@ var rootCmd = &cobra.Command{
 	Use:   "env-manager",
 	Short: "Manage .env files with PostgreSQL backend",
 	Long: `env-manager is a CLI tool to manage environment variables
-	accross multiple projects, stored securely in PostgreSQL.
+	across multiple projects, stored securely in PostgreSQL.
 
 	Example:
 		env-manager init my-project
@@ -62,5 +64,6 @@ func Execute() {
 }
 
 func init() {
-	// Subcommands will be registered here as we build them
+	// Subcommands
+	rootCmd.AddCommand(setupCmd)
 }
