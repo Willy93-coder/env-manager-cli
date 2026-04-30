@@ -14,7 +14,7 @@ import (
 
 var setupCmd = &cobra.Command{
 	Use:   "setup",
-	Short: "Setup database",
+	Short: "Configure the database conection",
 	Args:  cobra.NoArgs,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		host, err := promptString("Database host", "localhost")
