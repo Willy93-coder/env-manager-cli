@@ -66,4 +66,5 @@ func Execute() {
 func init() {
 	// Subcommands
 	rootCmd.AddCommand(setupCmd)
+	rootCmd.AddCommand(initCmd)
 }
