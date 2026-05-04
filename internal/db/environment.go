@@ -73,6 +73,10 @@ func (db *DB) GetEnvironments(projectID int64) ([]models.Environment, error) {
 	return environments, nil
 }
 
+func (db *DB) GetEnvironmentByKey(projectID int64, key string) (*models.Environment, error) {
+	return nil, nil
+}
+
 func (db *DB) UpdateEnvironment(projectID int64, key, value string) (*models.Environment, error) {
 	query := `
 		UPDATE environments
