@@ -67,4 +67,5 @@ func init() {
 	// Subcommands
 	rootCmd.AddCommand(setupCmd)
 	rootCmd.AddCommand(initCmd)
+	rootCmd.AddCommand(setCmd)
 }
