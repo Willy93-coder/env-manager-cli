@@ -74,7 +74,20 @@ func (db *DB) GetEnvironments(projectID int64) ([]models.Environment, error) {
 }
 
 func (db *DB) GetEnvironmentByKey(projectID int64, key string) (*models.Environment, error) {
-	return nil, nil
+	query := `
+		SELECT * FROM environments
+		WHERE project_id = $1 AND key = $2
+	`
+
+	var environment models.Environment
+	ctx := context.Background()
+	row := db.QueryRowContext(ctx, query, projectID, key)
+	err := row.Scan(&environment.ID, &environment.ProjectID, &environment.Key, &environment.Value, &environment.CreatedAt, &environment.UpdatedAt)
+	if err != nil {
+		return nil, fmt.Errorf("could not get key: %w", err)
+	}
+
+	return &environment, nil
 }
 
 func (db *DB) UpdateEnvironment(projectID int64, key, value string) (*models.Environment, error) {
