@@ -70,4 +70,6 @@ func init() {
 	rootCmd.AddCommand(setCmd)
 	rootCmd.AddCommand(getCmd)
 	rootCmd.AddCommand(listCmd)
+	deleteCmd.Flags().Bool("all", false, "delete all environment variables")
+	rootCmd.AddCommand(deleteCmd)
 }
