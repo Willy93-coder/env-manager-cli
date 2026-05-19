@@ -72,4 +72,5 @@ func init() {
 	rootCmd.AddCommand(listCmd)
 	deleteCmd.Flags().Bool("all", false, "delete all environment variables")
 	rootCmd.AddCommand(deleteCmd)
+	rootCmd.AddCommand(exportCmd)
 }
